@@ -2,6 +2,7 @@
 
 <?php
 
+date_default_timezone_set('Europe/Paris');
 $_date = date('Y-m-d');
 $_heure = date('H:i:s');
 // Récupére la course ou l'heure de départ est inférieur à l'heure actuelle
@@ -10,7 +11,7 @@ $reponse = $SelectCourse->fetch();
 
 /* ----- # Calcul de l'heure de fin de course # ------ */ 
 global $heure_fin;
-$heure_d = $reponse['h_depart']; // Récupération de l'heure de départ
+$heure_d = isset($reponse['h_depart']) ? $reponse['h_depart']: null; // Récupération de l'heure de départ
 if(!empty($heure_d)) {
 	$heure_fin = $heure_d[0].$heure_d[1]; // Récupération que de l'heure
 	$heure_fin = $heure_fin + 6; // Rajout de 6 heure en plus à l'heure de départ pour avoir l'heure de fin

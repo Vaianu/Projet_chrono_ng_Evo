@@ -1,8 +1,8 @@
-<?php include('CalculTemps.php'); ?> <!-- Inclusion de la classe Temps pour le calcul des temps -->
 <?php include('connectBDD.php'); ?> <!-- Connexion à la base de données -->
 
 <?php
 session_start(); // Pour que l'information du choix de la course soit accessible sur la page "pdf.php"
+date_default_timezone_set('Europe/Paris');
 $date = date('Y-m-d'); // Récupéreration de la date actuelle
 $_heure = date('H:i:s'); // Heure actuelle format 10:00:00
 
@@ -11,7 +11,7 @@ $SelectCourse = $bdd->query("SELECT * FROM course WHERE dateURSE='$date' && h_de
 $reponse = $SelectCourse->fetch();
 
 /* ------------- # Calcul de l'heure de fin de course # -------------- */
-$heure_d = $reponse['h_depart'];
+$heure_d = $reponse ? $reponse['h_depart'] : null;
 //echo $heure_d.' Heure départ<br>';
 global $heure_fin;
 if(!empty($heure_d)) {
@@ -27,7 +27,7 @@ if(!empty($heure_d)) {
 
 global $SelectnomCourse;
 /* -- Total participant Depart -- */
-$idURSE = $reponse['idURSE'];
+$idURSE = $reponse ? $reponse['idURSE'] : null;
 $requeteTotalDepart = $bdd->query("SELECT COUNT(*) AS totalD FROM chrono WHERE idURSE='$idURSE'");
 $totalParticipantDepart = $requeteTotalDepart->fetch();
 $nbCoureurDepart = $totalParticipantDepart['totalD'];
@@ -41,7 +41,7 @@ $nbCoureurArrivee = $totalParticipantArrivee['totalA'];
 if(empty($heure_fin)) // Pour évité que $_heure soit supérieur à $heure_fin s'il n'y pas de course aujourd'hui
 	$heure_fin = '23:59:59';
 	
-if ($reponse['dateURSE'] == $date && $nbCoureurDepart == $nbCoureurArrivee || $_heure > $heure_fin ) // Si l'heure courante est supérieur à l'heure de fin de course
+if ($reponse ? $reponse['dateURSE'] : null == $date && $nbCoureurDepart == $nbCoureurArrivee || $_heure > $heure_fin ) // Si l'heure courante est supérieur à l'heure de fin de course
 {
 	$SelectnomCourse = $bdd->query("SELECT idURSE, nomURSE FROM course WHERE dateURSE <= '$date' ORDER BY dateURSE DESC"); // Récupére les courses fini si le direct est fini
 }
@@ -109,31 +109,6 @@ if (isset($_POST['choixCourse'])) {
 
 /* ---------- " Calcul des temps / Affichage en brut " ---------- */
 if (isset($_POST['choixCourse']) && ($_POST['categorie'])=='0') {
-	
-	$requeteFinish = $bdd->query("SELECT coureur.idREUR, chrono.t_depart, chrono.t_arrivee FROM ((chrono INNER JOIN course ON chrono.idURSE=course.idURSE)INNER JOIN coureur ON chrono.idREUR=coureur.idREUR) WHERE chrono.idURSE='$choixCourse' && chrono.t_arrivee!='00:00:00' && chrono.tempsFinal='00:00:00' ORDER BY chrono.t_arrivee");	
-
-while ($resultat = $requeteFinish->fetch()) {
-
-	$heure_depart = $resultat['t_depart'][0].$resultat['t_depart'][1];   // On récupére l'heure de départ
-	$min_depart = $resultat['t_depart'][3].$resultat['t_depart'][4];     // On récupére les minutes de départ
-	$seconde_depart = $resultat['t_depart'][6].$resultat['t_depart'][7]; // On récupére les secondes de départ
-	
-	$heure_arrivee = $resultat['t_arrivee'][0].$resultat['t_arrivee'][1]; 
-	$min_arrivee = $resultat['t_arrivee'][3].$resultat['t_arrivee'][4];
-	$seconde_arrivee = $resultat['t_arrivee'][6].$resultat['t_arrivee'][7];
-
-	$tempsDepart = new Temps($heure_depart, $min_depart, $seconde_depart); // Instanciation de la classe Temps
-	$tempsArrivee = new Temps($heure_arrivee, $min_arrivee, $seconde_arrivee);
-	$tempsTotal = new Temps();
-	$tempsTotal->calculTemps($tempsArrivee, $tempsDepart); // Calcul du temps Final
-	
-	/* --------#  Mis à jour dans la table "chrono" pour le "tempsFinal"  #--------- */
-	$recupTempsBdd = $tempsTotal->getTempsBdd();
-	$idREUR = $resultat['idREUR'];
-	
-	$bdd->exec("UPDATE chrono SET tempsFinal='$recupTempsBdd' WHERE idREUR='$idREUR'");	
-	}
-	
 	/* ---------- | Affichage en brut | ----------- */
 echo '<div class="conteneur">
 	<table style="width: 60%">
@@ -184,37 +159,12 @@ echo '</table>';
 
 	/* ----------------- ## PDF ## ------------------- */
 $_SESSION['choixCourse'] = $choixCourse; // Choix course
-echo '<a class="pdf" href="http://localhost/fpdf181/pdf.php" target="_blank">Résultat en PDF</a>'; // Rediriger vers "pdf.php"
+echo '<a class="pdf" href="http://localhost/www_ProjetSite_Bts/fpdf181/pdf.php" target="_blank">Résultat en PDF</a>'; // Rediriger vers "pdf.php"
 }
 
 
 	/* ---------- | Affichage par catégorie | --------- */
-else if (isset($_POST['choixCourse'])) {
-	/* -- Calculs des temps -- */ 
-	$requeteFinish = $bdd->query("SELECT coureur.idREUR, chrono.t_depart, chrono.t_arrivee FROM ((chrono INNER JOIN course ON chrono.idURSE=course.idURSE)INNER JOIN coureur ON chrono.idREUR=coureur.idREUR) WHERE course.idURSE='$choixCourse' && chrono.t_arrivee!='00:00:00' && chrono.tempsFinal='00:00:00' ORDER BY chrono.t_arrivee");
-	
-	while ($resultat = $requeteFinish->fetch()) {
-
-		$heure_depart = $resultat['t_depart'][0].$resultat['t_depart'][1];
-		$min_depart = $resultat['t_depart'][3].$resultat['t_depart'][4];
-		$seconde_depart = $resultat['t_depart'][6].$resultat['t_depart'][7];
-	
-		$heure_arrivee = $resultat['t_arrivee'][0].$resultat['t_arrivee'][1]; 
-		$min_arrivee = $resultat['t_arrivee'][3].$resultat['t_arrivee'][4];
-		$seconde_arrivee = $resultat['t_arrivee'][6].$resultat['t_arrivee'][7];
-
-		$tempsDepart = new Temps($heure_depart, $min_depart, $seconde_depart);
-		$tempsArrivee = new Temps($heure_arrivee, $min_arrivee, $seconde_arrivee);
-		$tempsTotal = new Temps();
-		$tempsTotal->calculTemps($tempsArrivee, $tempsDepart);
-	
-		/*--------#  Mis à jour dans la table "chrono" pour le "tempsFinal"  #---------*/
-		$recupTempsBdd = $tempsTotal->getTempsBdd();
-		$idREUR = $resultat['idREUR'];
-		
-		$bdd->exec("UPDATE chrono SET tempsFinal='$recupTempsBdd' WHERE idREUR='$idREUR'");
-	}
-	
+else if (isset($_POST['choixCourse'])) {	
 	/* ------------ | Affichage par catégorie | -------------- */
 	echo '<div class="conteneur">
 	<table style="width: 60%">
