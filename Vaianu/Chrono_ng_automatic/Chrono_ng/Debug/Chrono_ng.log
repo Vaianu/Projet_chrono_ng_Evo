@@ -1,5 +1,5 @@
 ﻿  Main.cpp
-c:\users\paihere\desktop\projet_bts\vaianu\chrono_ng_automatic\chrono_ng\Enregistrement.h(60): warning C4101: 'ex' : variable locale non référencée
-c:\users\paihere\desktop\projet_bts\vaianu\chrono_ng_automatic\chrono_ng\Enregistrement.h(991): warning C4101: 'ex' : variable locale non référencée
-  Chrono_ng.vcxproj -> C:\Users\Paihere\Desktop\Projet_BTS\Vaianu\Chrono_ng_automatic\Debug\Chrono_ng.exe
-  Chrono_ng.vcxproj -> C:\Users\Paihere\Desktop\Projet_BTS\Vaianu\Chrono_ng_automatic\Debug\Chrono_ng.pdb (Full PDB)
+c:\users\paihere\desktop\projet_bts_evolution_2022\vaianu\chrono_ng_automatic\chrono_ng\Enregistrement.h(60): warning C4101: 'ex' : variable locale non référencée
+c:\users\paihere\desktop\projet_bts_evolution_2022\vaianu\chrono_ng_automatic\chrono_ng\Enregistrement.h(991): warning C4101: 'ex' : variable locale non référencée
+  Chrono_ng.vcxproj -> C:\Users\Paihere\Desktop\Projet_BTS_Evolution_2022\Vaianu\Chrono_ng_automatic\Debug\Chrono_ng.exe
+  Chrono_ng.vcxproj -> C:\Users\Paihere\Desktop\Projet_BTS_Evolution_2022\Vaianu\Chrono_ng_automatic\Debug\Chrono_ng.pdb (Full PDB)

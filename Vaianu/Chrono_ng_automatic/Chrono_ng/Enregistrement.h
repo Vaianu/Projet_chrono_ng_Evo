@@ -45,9 +45,9 @@ namespace Chrono_ng {
 			}
 			_lecteurBadgeConnecter = false;
 
-			//String^ requeteDeConnection = "server=localhost;uid=root;password='';database=chrono_ng;";
+			String^ requeteDeConnection = "server=localhost;uid=root;password='';database=chrono_ng;";
 			//String^ requeteDeConnection = "server=172.20.10.2;uid=Vai;password='';database=chrono_ng;";
-			String^ requeteDeConnection = "server=mysql-chrono.alwaysdata.net;uid=chrono;password='chrono';database=chrono_ng;";
+			//String^ requeteDeConnection = "server=mysql-chrono.alwaysdata.net;uid=chrono;password='chrono';database=chrono_ng;";
 			_conn = gcnew MySqlConnection(requeteDeConnection);
 				try
 				{

@@ -346,24 +346,6 @@ namespace Chrono_ng {
 #pragma endregion
 		void AfficheClassement()
 		{
-			/*------ Pour que le programme php qui calcule le temps tourne ------*/
-			WebRequest^ Request;
-			HttpWebResponse^ Response;
-			Stream^ Stream1;
-			StreamReader^ SReader;
-			String^ Responsestring;
-			String^ PATH = "http://chrono.alwaysdata.net/Direct.php";
-			Request = WebRequest::Create(PATH);
-			Request->Credentials = CredentialCache::DefaultCredentials;
-			Request->GetResponse();
-			Response = dynamic_cast<HttpWebResponse^>(Request->GetResponse());
-			Stream1 = Response->GetResponseStream();
-			SReader = gcnew StreamReader(Stream1);
-			Responsestring = SReader->ReadToEnd();
-			SReader->Close();
-			Stream1->Close();
-			Response->Close();
-
 			dataGridViewDirect->Columns[6]->DefaultCellStyle->ForeColor = Color::Green; // pour les differences en vert
 			String^ date = DateTime::Now.Today.ToString("d"); // On récupère la date de l'ordinateur
 			String^ dateInverser = date[6].ToString() + date[7] + date[8] + date[9] + date[5] + date[3] + date[4] + date[2] + date[0] + date[1]; //Inverser date
