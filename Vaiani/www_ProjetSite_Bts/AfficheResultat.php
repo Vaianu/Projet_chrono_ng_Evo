@@ -159,7 +159,7 @@ echo '</table>';
 
 	/* ----------------- ## PDF ## ------------------- */
 $_SESSION['choixCourse'] = $choixCourse; // Choix course
-echo '<a class="pdf" href="http://localhost/www_ProjetSite_Bts/fpdf181/pdf.php" target="_blank">Résultat en PDF</a>'; // Rediriger vers "pdf.php"
+echo '<a class="pdf" href="fpdf181/pdf.php" target="_blank">Résultat en PDF</a>'; // Rediriger vers "pdf.php"
 }
 
 
